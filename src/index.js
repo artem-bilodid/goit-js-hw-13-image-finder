@@ -43,21 +43,22 @@ const pixabayClient = new PixabayClient();
 
 const onFormSubmit = async event => {
   event.preventDefault();
-  pixabayClient.resetPageCounter();
+
   const formData = new FormData(event.currentTarget);
   const searchQuery = formData.get('searchQuery').trim();
 
   if (!searchQuery) {
     Notiflix.Notify.warning('Please enter something into the Searsh field.');
-    refs.galleryEl.innerHTML = '';
     return;
   }
+
+  pixabayClient.resetPageCounter();
   pixabayClient.query = searchQuery;
 
   try {
     const images = await pixabayClient.fetchImages();
     if (images.length === 0) {
-      Notiflix.Notify.error(
+      Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.',
       );
     }
@@ -65,7 +66,7 @@ const onFormSubmit = async event => {
     refs.galleryEl.innerHTML = photoCardsTpl(images);
     lightbox.refresh();
   } catch (error) {
-    Notiflix.Notify.error(error);
+    Notiflix.Notify.failure(error);
   }
 
   const currentGalleryImagesCount = getGalleryImagesCount();
@@ -92,14 +93,9 @@ const onLoadMoreButtonClick = async event => {
       hideLoadMoreButton();
     }
   } catch (error) {
-    Notiflix.Notify.error(error);
+    Notiflix.Notify.failure(error);
   }
-};
-
-const onGalleryImageLinkClicked = event => {
-  event.preventDefault();
 };
 
 refs.searchForm.addEventListener('submit', onFormSubmit);
 refs.loadMoreButtonEl.addEventListener('click', onLoadMoreButtonClick);
-refs.galleryEl.addEventListener('click', onGalleryImageLinkClicked);
