@@ -2,6 +2,7 @@ import './sass/main.scss';
 import photoCardsTpl from './templates/photo-cards.hbs';
 import PixabayClient from './js/pixabay-client';
 import SimpleLightbox from 'simplelightbox';
+import Notiflix from 'notiflix';
 
 const refs = {
   galleryEl: document.querySelector('.gallery'),
@@ -47,7 +48,7 @@ const onFormSubmit = async event => {
   const searchQuery = formData.get('searchQuery').trim();
 
   if (!searchQuery) {
-    console.log('Empty request query');
+    Notiflix.Notify.warning('Please enter something into the Searsh field.');
     refs.galleryEl.innerHTML = '';
     return;
   }
@@ -56,13 +57,15 @@ const onFormSubmit = async event => {
   try {
     const images = await pixabayClient.fetchImages();
     if (images.length === 0) {
-      console.log('Sorry, there are no images matching your search query. Please try again.');
+      Notiflix.Notify.error(
+        'Sorry, there are no images matching your search query. Please try again.',
+      );
     }
 
     refs.galleryEl.innerHTML = photoCardsTpl(images);
     lightbox.refresh();
   } catch (error) {
-    console.log('Error', error);
+    Notiflix.Notify.error(error);
   }
 
   const currentGalleryImagesCount = getGalleryImagesCount();
@@ -85,11 +88,11 @@ const onLoadMoreButtonClick = async event => {
 
     const currentGalleryImagesCount = getGalleryImagesCount();
     if (currentGalleryImagesCount >= pixabayClient.totalHits) {
-      console.log("We're sorry, but you've reached the end of search results.");
+      Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
       hideLoadMoreButton();
     }
   } catch (error) {
-    console.log(error);
+    Notiflix.Notify.error(error);
   }
 };
 
