@@ -1,12 +1,8 @@
 {{#each this}}
   <div class='photo-card'>
-    <div class='image-placeholder'><img
-        rel='preload'
-        class='card-image'
-        src={{webformatURL}}
-        data-testSrc={{largeImageURL}}
-        alt=''
-      /></div>
+    <a class='image-link image-placeholder' href={{largeImageURL}}>
+      <img class='card-image' src={{webformatURL}} alt='' />
+    </a>
 
     <div class='stats'>
       <p class='stats-item'>

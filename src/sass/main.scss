@@ -110,13 +110,14 @@ main {
   width: 178.75px;
   border-bottom: 1px solid lightgray;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   @media (min-width: 1280px) {
     height: 220px;
     width: 286.75px;
   }
-}
-.card-image {
-  cursor: pointer;
 }
 
 .stats {

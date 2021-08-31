@@ -1,12 +1,22 @@
 import './sass/main.scss';
 import photoCardsTpl from './templates/photo-cards.hbs';
 import PixabayClient from './js/pixabay-client';
+import SimpleLightbox from 'simplelightbox';
 
 const refs = {
   galleryEl: document.querySelector('.gallery'),
   searchForm: document.querySelector('#search-form'),
   loadMoreButtonEl: document.querySelector('.load-more'),
 };
+let lightbox = new SimpleLightbox('.gallery a', {
+  animationSpeed: 300,
+  fadeSpeed: 200,
+  captions: false,
+});
+
+lightbox.on(() => {
+  lightbox.next();
+});
 
 const getGalleryImagesCount = () => {
   return refs.galleryEl.children.length;
@@ -50,6 +60,7 @@ const onFormSubmit = async event => {
     }
 
     refs.galleryEl.innerHTML = photoCardsTpl(images);
+    lightbox.refresh();
   } catch (error) {
     console.log('Error', error);
   }
@@ -69,7 +80,7 @@ const onLoadMoreButtonClick = async event => {
 
     const newItemGalleryIndex = getGalleryImagesCount();
     refs.galleryEl.insertAdjacentHTML('beforeend', photoCardsTpl(newImages));
-
+    lightbox.refresh();
     scrollDownToTheLastChild(newItemGalleryIndex);
 
     const currentGalleryImagesCount = getGalleryImagesCount();
@@ -82,5 +93,10 @@ const onLoadMoreButtonClick = async event => {
   }
 };
 
+const onGalleryImageLinkClicked = event => {
+  event.preventDefault();
+};
+
 refs.searchForm.addEventListener('submit', onFormSubmit);
 refs.loadMoreButtonEl.addEventListener('click', onLoadMoreButtonClick);
+refs.galleryEl.addEventListener('click', onGalleryImageLinkClicked);
